@@ -13,30 +13,33 @@ class SimpleCifarNet(nn.Module):
     ):
         super().__init__()
 
-        self.model = nn.Sequential(
-            nn.Conv2d(lin1_channel_size, 3, 3, stride=1, padding=1), # 16
+        self.feature = nn.Sequential(
+            nn.Conv2d(3, lin1_channel_size, 3, stride=2, padding=1), # 16
             nn.BatchNorm2d(lin1_channel_size),
             nn.ReLU(),
-            nn.Conv2d(lin2_channel_size, lin1_channel_size, 3, stride=1, padding=1), # 8
+            nn.Conv2d(lin1_channel_size, lin2_channel_size, 3, stride=2, padding=1), # 8
             nn.BatchNorm2d(lin2_channel_size),
             nn.ReLU(),
             
-            nn.Conv2d(lin3_channel_size, lin2_channel_size, 3, stride=1, padding=1), # 4
+            nn.Conv2d(lin2_channel_size, lin3_channel_size, 3, stride=2, padding=1), # 4
             nn.BatchNorm2d(lin3_channel_size),
             nn.ReLU(),
             
+        )
+        self.classifier = nn.Sequential(
             nn.AdaptiveAvgPool2d((1, 1)),
+            nn.Flatten(),
             nn.Dropout(drop_out),
-            nn.Linear(4*4*lin3_channel_size, output_size),
+            nn.Linear(lin3_channel_size, output_size),
+
         )
 
     def forward(self, x):
         batch_size, channels, width, height = x.size()
+        x = self.feature(x)
+        x = self.classifier(x)
 
-        # (batch, 1, width, height) -> (batch, 1*width*height)
-        x = x.view(batch_size, -1)
-
-        return self.model(x)
+        return x
 
 
 if __name__ == "__main__":
