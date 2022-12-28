@@ -1,0 +1,6 @@
+[submodule "src/QPyTorch"]
+	path = src/QPyTorch
+	url = git@github.com:pdh930105/QPyTorch.git
+[submodule "QPyTorch"]
+	path = QPyTorch
+	url = git@github.com:pdh930105/QPyTorch.git
