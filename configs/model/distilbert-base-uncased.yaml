@@ -1,0 +1,10 @@
+_target_: src.models.glue_transformers.GLUETransformer
+model_name_or_path: "distilbert-base-uncased"
+learning_rate: 2e-5
+adam_epsilon: 1e-8
+warmup_steps: 0
+weight_decay: 0.0
+num_labels: 10 # but override datamodule
+task_names: 'mrpc' # but override datamodule
+train_batch_size: ${datamodule.train_batch_size}
+eval_batch_size: ${datamodule.eval_batch_size}
